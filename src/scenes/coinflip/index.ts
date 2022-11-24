@@ -62,7 +62,11 @@ async function coinflip() {
   function animate() {
     renderer.render(scene, camera);
     world.step();
-    coin.updateMeshPosition().focus(camera);
+    coin
+      .updateMeshPosition()
+      .cameraFollow(camera, [1, 1, 1])
+      .focus(camera)
+      .illuminate(light);
     requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);

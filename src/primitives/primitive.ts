@@ -1,6 +1,6 @@
 import rapier from "@dimforge/rapier3d";
 import * as three from "three";
-import { Vector3Tuple } from "three";
+import { Vector3, Vector3Tuple } from "three";
 import { MeshMaterialType } from "@types";
 
 class Primitive {
@@ -64,7 +64,6 @@ class Primitive {
 
   addToScene(scene: three.Scene) {
     if (!this.mesh) {
-      console.error(`mesh is ${this.mesh}`);
       return this;
     }
     scene.add(this.mesh);
@@ -77,7 +76,6 @@ class Primitive {
 
   updateMeshTranslation() {
     if (!this.rigidBody) {
-      console.error(`rigidBody is ${this.rigidBody}`);
       return this;
     }
     const { x, y, z } = this.rigidBody.translation();
@@ -87,7 +85,6 @@ class Primitive {
 
   updateMeshRotation() {
     if (!this.rigidBody) {
-      console.error(`rigidBody is ${this.rigidBody}`);
       return this;
     }
     const { w, x, y, z } = this.rigidBody.rotation();
@@ -97,11 +94,29 @@ class Primitive {
 
   focus(camera: three.Camera) {
     if (!this.rigidBody) {
-      console.error(`rigidBody is ${this.rigidBody}`);
       return this;
     }
     const { x, y, z } = this.rigidBody.translation();
     camera.lookAt(x, y, z);
+    return this;
+  }
+
+  cameraFollow(camera: three.Camera, distance: Vector3Tuple) {
+    if (!this.rigidBody) {
+      return this;
+    }
+    const { x, y, z } = this.rigidBody.translation();
+    const newPosition = new Vector3(x, y, z).add(new Vector3(...distance));
+    camera.position.set(...newPosition.toArray());
+    return this;
+  }
+
+  illuminate(light: three.DirectionalLight) {
+    if (!this.rigidBody) {
+      return this;
+    }
+    const { x, y, z } = this.rigidBody.translation();
+    light.target.position.set(x, y, z);
     return this;
   }
 }
